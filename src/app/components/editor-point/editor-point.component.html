@@ -1,0 +1,154 @@
+<div class="container">
+  <p-card header="Управление пунктами">
+    <p-toolbar styleClass="mb-6">
+      <ng-template pTemplate="start">
+        <p-button label="Добавить" icon="pi pi-plus" class="mr-2" (onClick)="openNew()"/>
+        <p-button severity="danger" label="Удалить" icon="pi pi-trash" outlined (onClick)="deleteSelectedPoints()"
+                  [disabled]="!selectedPoints || !selectedPoints.length"/>
+      </ng-template>
+      <ng-template pTemplate="end">
+        <p-button icon="pi pi-refresh" (click)="refreshPoints()" rounded raised/>
+      </ng-template>
+    </p-toolbar>
+
+    <p-table
+      #dt
+      [value]="points"
+      [rows]="10"
+      [tableStyle]="{ 'min-width': '75rem' }"
+      [(selection)]="selectedPoints"
+      [rowHover]="true"
+      [loading]="loading"
+      [showLoader]="true"
+      dataKey="id">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th>Страна</th>
+          <th>Область</th>
+          <th>Город</th>
+          <th style="min-width: 16rem">Адрес</th>
+          <th>Наименование</th>
+          <th>Тип</th>
+          <th>Статус</th>
+          <th style="min-width: 8rem"></th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-point>
+        <tr>
+          <td style="width: 3rem">
+            <p-tableCheckbox [value]="point"></p-tableCheckbox>
+          </td>
+          <td>{{ point.country }}</td>
+          <td>{{ point.province }}</td>
+          <td>{{ point.locality }}</td>
+          <td style="min-width: 16rem">{{ point.address }}</td>
+          <td>{{ point.name }}</td>
+          <td>{{ getPointTypeLabel( point.pointType) }}</td>
+          <td>
+            <p-tag [value]=" getPointStatusLabel(point.pointStatus)"
+                   [severity]="getPointSeverity(point.pointStatus)"></p-tag>
+          </td>
+          <td>
+            <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
+                      (click)="editPoint(point)"></p-button>
+            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                      (click)="deletePoint(point)"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!--      <ng-template pTemplate="summary">-->
+      <!--        <div class="flex items-center justify-between">-->
+      <!--          In total there are {{ points ? points.length : 0 }} products.-->
+      <!--        </div>-->
+      <!--      </ng-template>-->
+    </p-table>
+    <p-paginator
+      #paginator
+      [rows]="10"
+      [totalRecords]="totalRecords"
+      (onPageChange)="loadPoints($event)">
+    </p-paginator>
+
+  </p-card>
+
+  <p-dialog [(visible)]="pointDialog" [style]="{ width: '450px' }" header="Детали пункта" draggable="false" (onHide)="hideDialog()"
+            [modal]="true">
+    <ng-template #content>
+      <form [formGroup]="pointForm">
+
+        <!-- Наименование пункта -->
+        <div>
+          <p-floatlabel variant="in">
+            <input type="text" id="name" maxlength="20" pInputText formControlName="name" [style]="{'width':'100%'}"
+                   class="mb-1"/>
+            <label for="name">Наименование пункта</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Полный адрес -->
+        <div *ngIf="!isEdit">
+          <p-floatlabel variant="in">
+            <p-autoComplete
+              inputId="address"
+              formControlName="address"
+              showClear="true"
+              [suggestions]="suggestions"
+              (completeMethod)="loadSuggestions($event)"
+              [style]="{'width':'100%'}"
+              [inputStyle]="{'width':'100%'}"
+              [panelStyle]="{'width':'100%'}"
+              appendTo="body"
+              styleClass="mb-1"
+            >
+            </p-autoComplete>
+            <label for="address">Полный адрес</label>
+          </p-floatlabel>
+        </div>
+
+        <div>
+          <p-floatlabel variant="in">
+            <p-select
+              id="pointType"
+              formControlName="pointType"
+              [options]="getPointTypeOptions()"
+              optionLabel="label"
+              optionValue="value"
+              appendTo="body"
+              [style]="{'width':'100%'}"
+              styleClass="mb-1"
+            />
+            <label for="pointType">Тип пункта</label>
+          </p-floatlabel>
+        </div>
+
+        <div>
+          <p-floatlabel variant="in">
+
+            <p-select
+              id="pointStatus"
+              formControlName="pointStatus"
+              [options]="getPointStatusOptions()"
+              optionLabel="label"
+              optionValue="value"
+              appendTo="body"
+              [style]="{'width':'100%'}"
+            />
+            <label for="pointStatus">Статус пункта</label>
+          </p-floatlabel>
+        </div>
+
+      </form>
+    </ng-template>
+
+    <ng-template #footer>
+      <p-button label="Отмена" icon="pi pi-times" text (click)="hideDialog()"/>
+      <p-button label="Сохранить" type="submit" icon="pi pi-check" (click)="addPoint()"/>
+    </ng-template>
+  </p-dialog>
+</div>

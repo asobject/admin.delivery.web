@@ -1,0 +1,17 @@
+<p-menubar>
+  <ng-template #start>
+    <p-button severity="secondary" icon="pi pi-home" routerLink="/home"/>
+  </ng-template>
+
+  <ng-template #end>
+    <button
+      pButton
+      size="small"
+      severity="secondary"
+      icon="pi pi-sign-out"
+      label="Выйти"
+      class="p-button-rounded"
+      (click)="onLogout()"
+    ></button>
+  </ng-template>
+</p-menubar>

@@ -1,0 +1,14 @@
+<div class="container">
+  <p-card header="Управление доставками">
+    <form [formGroup]="orderForm" (ngSubmit)="getOrder()">
+      <p-floatlabel variant="in">
+        <input id="tracker" type="text" class="w-full" pInputText formControlName="tracker" />
+        <label for="tracker">Трек номер</label>
+      </p-floatlabel>
+      <button [disabled]="!orderForm.valid"  pButton pRipple class="w-full mt-1" type="submit" label="Получить информацию" icon="pi pi-info"></button>
+    </form>
+    <div  *ngIf="orderDTO">
+    <app-order [dataInput]="orderDTO" ></app-order>
+    </div>
+  </p-card>
+</div>

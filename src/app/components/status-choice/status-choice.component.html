@@ -1,0 +1,15 @@
+<div class="container">
+  <p-floatlabel variant="in">
+    <p-select
+      id="orderStatus"
+      [(ngModel)]="selectedStatus"
+      [options]="getOrderStatusOptions()"
+      optionLabel="label"
+      optionValue="value"
+      appendTo="body"
+      (onChange)="onSelect()"
+      [style]="{'width':'100%'}"
+    />
+    <label for="orderStatus">Статус заказа</label>
+  </p-floatlabel>
+</div>

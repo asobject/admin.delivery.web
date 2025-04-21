@@ -1,0 +1,7 @@
+<p-toast/>
+<header *ngIf="userService.isAuthenticated()">
+  <app-header></app-header>
+</header>
+<main>
+  <router-outlet></router-outlet>
+</main>
